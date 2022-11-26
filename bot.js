@@ -7,6 +7,24 @@ var bot=new Telegram('5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w',{polling:t
 // const uNumberId = msg.chat.id
 
 
+bot.onText(/\/start/ , msg=>{
+    bot.sendMessage(
+        msg.chat.id ,
+            'Hello Dear' +
+        msg.chat.first_name +
+            'Welcome To My Bot',
+            {
+                reply_markup : {
+                    'keyboard' : [
+                        ['WebSite','My Project'],
+                        ['Send Me Message (Soon!)']
+                    ]
+                }
+            }
+        )
+    }
+)
+
 
 
 bot.onText(/\/me/ , msg=>{
@@ -30,9 +48,13 @@ bot.onText(/\/me/ , msg=>{
 
 bot.on('message',async (msg) =>
     {
+
+        
+
+        
         console.log(msg);
-        console.log(msg.text);   
-    
+        console.log(msg.text);
+        
 
         switch(msg.text){
             case 'WebSite' :
@@ -52,59 +74,9 @@ bot.on('message',async (msg) =>
             
             case 'Send Me Message' :
                 bot.sendMessage(
-                    msg.chat.id , 'Send Your Message \n'+'( Please Dont Send Gif - Image - Video !) '
+                    msg.chat.id , 'Send Your Message \n'+'( Please Dont Send Gif - Image - Video !)  '
                 )
             break;
         }
-
-
-        if (msg.chat.id === 905259902){
-            bot.sendMessage(
-                msg.chat.id='-1001884765536', 
-                'Admin  ' +
-                msg.chat.first_name +
-                '  ( @' +
-                msg.chat.username +
-                ' ) ' +
-                'send this messages : \n \n \n' +
-                msg.text
-            )
-
-        }else{
-            bot.sendMessage(
-                msg.chat.id='-1001884765536', 
-                'User  ' +
-                msg.chat.first_name +
-                '  ( @' +
-                msg.chat.username +
-                ' ) ' +
-                'send this messages : \n \n \n' +
-                msg.text
-            )
-        }
-
-
-
-    }
-)
-
-
-
-
-bot.onText(/\/start/ , msg=>{
-    bot.sendMessage(
-        msg.chat.id ,
-            'Hello Dear' +
-        msg.chat.first_name +
-            'Welcome To My Bot',
-            {
-                reply_markup : {
-                    'keyboard' : [
-                        ['WebSite','My Project'],
-                        ['Send Me Message']
-                    ]
-                }
-            }
-        )
     }
 )
