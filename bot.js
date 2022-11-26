@@ -8,7 +8,7 @@ bot.onText(/\/start/ , msg=>{
         msg.chat.id ,
             'سلام  ' +
         msg.chat.first_name +
-            ' به ربات من خوش نیآمدی ',
+            ' به ربات من خوش آمدی ',
             {
                 reply_markup : {
                     'keyboard' : [
