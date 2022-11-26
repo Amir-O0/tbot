@@ -49,7 +49,9 @@ bot.onText(/\/me/ , msg=>{
 
 bot.on('message',async (msg) =>
     {
-        console.log(msg);
+        console.log(msg.text);
+        console.log(msg.chat.first_name);
+        console.log(msg.user_name);
         
 
         switch(msg.text){
