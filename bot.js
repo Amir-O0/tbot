@@ -9,25 +9,6 @@ var bot=new Telegram('5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w',{polling:t
 
 
 
-bot.onText(/\/start/ , msg=>{
-    bot.sendMessage(
-        msg.chat.id ,
-            'Hello Dear' +
-        msg.chat.first_name +
-            'Welcome To My Bot',
-            {
-                reply_markup : {
-                    'keyboard' : [
-                        ['WebSite','My Project'],
-                        ['Send Me Message']
-                    ]
-                }
-            }
-        )
-    }
-)
-
-
 bot.onText(/\/me/ , msg=>{
     var userInfo = (
         '\n Your full name:'+
@@ -49,10 +30,9 @@ bot.onText(/\/me/ , msg=>{
 
 bot.on('message',async (msg) =>
     {
-        console.log(msg.text);
-        console.log(msg.chat.first_name);
-        console.log(msg.user_name);
-        
+        console.log(msg);
+        console.log(msg.text);   
+    
 
         switch(msg.text){
             case 'WebSite' :
@@ -109,3 +89,22 @@ bot.on('message',async (msg) =>
 )
 
 
+
+
+bot.onText(/\/start/ , msg=>{
+    bot.sendMessage(
+        msg.chat.id ,
+            'Hello Dear' +
+        msg.chat.first_name +
+            'Welcome To My Bot',
+            {
+                reply_markup : {
+                    'keyboard' : [
+                        ['WebSite','My Project'],
+                        ['Send Me Message']
+                    ]
+                }
+            }
+        )
+    }
+)
