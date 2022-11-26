@@ -1,14 +1,20 @@
 var Telegram=require('node-telegram-bot-api')
 var bot=new Telegram('5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w',{polling:true})
 
+// const uFirstName = msg.chat.first_name
+// const uLastName = msg.chat.last_name
+// const uName = msg.chat.username
+// const uNumberId = msg.chat.id
+
+
 
 
 bot.onText(/\/start/ , msg=>{
     bot.sendMessage(
         msg.chat.id ,
-            'سلام  ' +
+            'Hello Dear' +
         msg.chat.first_name +
-            ' به ربات من خوش آمدی ',
+            'Welcome To My Bot',
             {
                 reply_markup : {
                     'keyboard' : [
@@ -20,10 +26,32 @@ bot.onText(/\/start/ , msg=>{
         )
     }
 )
+
+
+bot.onText(/\/me/ , msg=>{
+    var userInfo = (
+        '\n Your full name:'+
+        msg.chat.first_name +
+        '\n Your Username:' +
+        '@'+
+        msg.chat.username +
+        '\n Your idNumber: '+
+        msg.chat.id);
+
+
+        bot.sendMessage(
+            msg.chat.id , userInfo
+        )
+    }
+
+)
+
+
 bot.on('message',async (msg) =>
     {
-        console.log(msg.text);
+        console.log(msg);
         
+
         switch(msg.text){
             case 'WebSite' :
                 bot.sendMessage(
@@ -33,15 +61,49 @@ bot.on('message',async (msg) =>
 
             case 'My Project' :
                 bot.sendMessage(
-                    msg.chat.id , 'ChatAPP : chat.aho-amiro.ir'
+                    msg.chat.id , 
+                    'ChatAPP : aho-amiro.ir \n \n' +
+                    'your info : /me'
+
                 )
             break;
             
             case 'Send Me Message' :
                 bot.sendMessage(
-                    msg.chat.id , 'Send Your Message'
+                    msg.chat.id , 'Send Your Message \n'+'( Please Dont Send Gif - Image - Video !) '
                 )
             break;
         }
+
+
+        if (msg.chat.id === 905259902){
+            bot.sendMessage(
+                msg.chat.id='-1001884765536', 
+                'Admin  ' +
+                msg.chat.first_name +
+                '  ( @' +
+                msg.chat.username +
+                ' ) ' +
+                'send this messages : \n \n \n' +
+                msg.text
+            )
+
+        }else{
+            bot.sendMessage(
+                msg.chat.id='-1001884765536', 
+                'User  ' +
+                msg.chat.first_name +
+                '  ( @' +
+                msg.chat.username +
+                ' ) ' +
+                'send this messages : \n \n \n' +
+                msg.text
+            )
+        }
+
+
+
     }
 )
+
+
