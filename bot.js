@@ -35,6 +35,15 @@ for (let i = 0; i < 99; i++) {
     )
 
 
+bot.onText(/ping/ , msg=>{
+
+        bot.sendMessage(
+            msg.chat.id , 'Bot is Online'
+        )
+    }
+
+)
+
 
 
 
