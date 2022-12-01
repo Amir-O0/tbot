@@ -72,7 +72,7 @@ bot.on('message',async (msg) =>
 
         
 
-        
+        Console.log(started);        
         console.log(msg);
         console.log(msg.text);
         
