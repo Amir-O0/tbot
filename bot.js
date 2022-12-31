@@ -35,22 +35,6 @@ for (let i = 0; i < 99; i++) {
     )
 
 
-bot.onText(/ping/ , msg=>{
-var userInfo = (
-        '\n Your full name:'+
-        msg.from.first_name +
-        '\n Your Username:' +
-        '@'+
-        msg.from.username +
-        '\n Your idNumber: '+
-        msg.from.id);
-        bot.sendMessage(
-            msg.chat.id , 'Bot is Online \n this is your information :'+ userInfo 
-        )
-    }
-
-)
-
 
 
 
@@ -79,9 +63,9 @@ bot.on('message',async (msg) =>
 
         
 
-        Console.log(started);        
-        //Console.log(msg);
-        Console.log(msg.text);
+        
+        console.log(msg);
+        console.log(msg.text);
         
 
         switch(msg.text){
