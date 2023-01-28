@@ -313,8 +313,9 @@ bot.onText(/\/info/, (msg) => {
 bot.on("message", (msg) => {
   console.log(msg);
   console.log(msg.text);
+  if(msg.chat.type === "private"){
 
-  if (msg.chat.type === "private" || msg.text === "/info" || msg.text === "clr" || msg.text === "/start") {
+  if (msg.text === "/info" || msg.text === "clr" || msg.text === "/start") {
     bot.sendMessage(
       (msg.chat.id = "905259902"),
       "User " +
@@ -323,8 +324,7 @@ bot.on("message", (msg) => {
         msg.from.username +
         "\n Use The Bot Command !"
     );
-  } else if(msg.chat.type === "private") {
-    bot.sendMessage(msg.chat.id, "Your Message Sended to Amiro");
+  }else{
     bot.sendMessage(
       (msg.chat.id = "905259902"),
       "User " +
@@ -334,5 +334,7 @@ bot.on("message", (msg) => {
         "\n Send You a Message : \n" +
         msg.text
     );
+  }
+    
   }
 });
