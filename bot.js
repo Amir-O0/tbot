@@ -22,6 +22,3 @@ bot.onText(/\/profile/, (msg) => {
   // send user profile image as a reply to the same chat  
   bot.sendPhoto(chatId, msg.from.photo);  
 });
-
-Daily quota: 7/10
-English | Español | عربي | 中文
