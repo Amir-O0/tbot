@@ -4,21 +4,33 @@ var bot = new Telegram("5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w", {
 });
 
 
-// Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {polling: true});
+const bot = new TelegramBot(token, {
+        polling: true
+    });
+    // Matches "/echo [whatever]"    
+    bot.onText(/\/echo (.+)/, (msg, match) => {
+        // 'msg' is the received Message from Telegram    
+        // 'match' is the result of executing the regexp above on the text content    
+        // of the message    
 
+        const chatId = msg.chat.id;
+        const resp = match[1]; // the captured "whatever"    
 
-// Matches "/profile" 
-bot.onText(/\/profile/, (msg) => {
-
-  const chatId = msg.chat.id;
-
-  // send a message to the chat acknowledging receipt of their message
-  bot.sendMessage(chatId, `Hi ${msg.from.first_name}, here is your profile information:`);
-
-  // send user profile information (name, age, etc.) as a reply to the same chat 
-  bot.sendMessage(chatId, `Name: ${msg.from.first_name} ${msg.from.last_name} \nAge: ${msg.from.age} \nGender: ${msg.from.gender}`);
-
-  // send user profile image as a reply to the same chat  
-  bot.sendPhoto(chatId, msg.from.photo);  
-});
+        // send back the matched "whatever" to the chat    
+        bot.sendMessage(chatId, resp);
+    });
+    // Listen for any kind of message. There are different kinds of  
+    // messages.  
+    bot.on('message', (msg) => {
+        const chatId = msg.chat.id;
+        var user_profile = bot.getUserProfilePhotos(msg.from.id);
+        user_profile.then(function (res) {
+            var file_id = res.photos[0][0].file_id;
+            var file = bot.getFile(file_id);
+            file.then(function (result) {
+                var file_path = result.file_path;
+                var photo_url = `https://api.telegram.org/file/bot${token}/${file_path}`
+                bot.sendMessage(chatId, photo_url);
+            });
+        });
+    });.
