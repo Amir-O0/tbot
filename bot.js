@@ -1,5 +1,5 @@
 var Telegram = require("node-telegram-bot-api");
-var bot = new Telegram("5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w", {
+var bot = new Telegram("6029156425:AAF17qBdzWbrgFiC_9VCZH7XPC8CX-TOJlM", {
   polling: true,
 });
 
