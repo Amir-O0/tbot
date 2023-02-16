@@ -3,34 +3,399 @@ var bot = new Telegram("5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w", {
   polling: true,
 });
 
+bot.on("message", (msg) => {
+  console.log(msg);
+  console.log(msg.text);
+  function delete50sec(a, b) {
+    for (let i = 0; i < 10; i++) {
+      bot.deleteMessage(msg.chat.id, msg.message_id - i).catch((er) => {
+        return;
+      });
+    }
+  }
+  setTimeout(delete50sec, 5000);
 
-const bot = new TelegramBot(token, {
-        polling: true
+  if (msg.text === "/info" || msg.text === "clr" || msg.text === "/start") {
+    bot.onText(/\/start/, (msg) => {
+      if (msg.chat.type === "private") {
+        bot.sendMessage(
+          msg.chat.id,
+          "سلام " + msg.from.first_name + " عزیز ! \n به ربات من خوش اومدی",
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "پروژه ها", callback_data: "projects" },
+                  { text: "ارسال پیام", callback_data: "send_msg" },
+                ],
+                [{ text: "من", url: "https://t.me/Amiro_im" }],
+              ],
+            },
+            reply_to_message_id: msg.message_id,
+          }
+        );
+      } else {
+        bot.sendMessage(
+          msg.chat.id,
+          "AmiroBot" + "\n" + msg.from.first_name + " انتخاب کنید:",
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: "ارسال پیام", callback_data: "sec_msg" }],
+                [
+                  {
+                    text: "اطلاعات اکانت شما",
+                    callback_data: "Project/UserInformation",
+                  },
+                ],
+              ],
+            },
+            reply_to_message_id: msg.message_id,
+          }
+        );
+      }
     });
-    // Matches "/echo [whatever]"    
-    bot.onText(/\/echo (.+)/, (msg, match) => {
-        // 'msg' is the received Message from Telegram    
-        // 'match' is the result of executing the regexp above on the text content    
-        // of the message    
 
-        const chatId = msg.chat.id;
-        const resp = match[1]; // the captured "whatever"    
+    bot.on("callback_query", function onCallbackQuery(callbackQuery) {
+      const action = callbackQuery.data;
+      const msg = callbackQuery.message;
+      const message_id = callbackQuery.message.message_id;
 
-        // send back the matched "whatever" to the chat    
-        bot.sendMessage(chatId, resp);
-    });
-    // Listen for any kind of message. There are different kinds of  
-    // messages.  
-    bot.on('message', (msg) => {
-        const chatId = msg.chat.id;
-        var user_profile = bot.getUserProfilePhotos(msg.from.id);
-        user_profile.then(function (res) {
-            var file_id = res.photos[0][0].file_id;
-            var file = bot.getFile(file_id);
-            file.then(function (result) {
-                var file_path = result.file_path;
-                var photo_url = `https://api.telegram.org/file/bot${token}/${file_path}`
-                bot.sendMessage(chatId, photo_url);
-            });
+      if (action === "BackToHome") {
+        bot.deleteMessage(msg.chat.id, msg.message_id).catch((er) => {
+          return;
         });
-    });.
+
+        if (msg.chat.type === "private") {
+          bot.sendMessage(
+            msg.chat.id,
+            "سلام " + msg.from.first_name + " عزیز به ربات من خوش اومدی",
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: "پروژه ها", callback_data: "projects" },
+                    { text: "ارسال پیام", callback_data: "sec_msg" },
+                  ],
+                  [{ text: "من", url: "https://t.me/Amiro_im" }],
+                ],
+              },
+              reply_to_message_id: msg.message_id,
+            }
+          );
+        } else {
+          bot.sendMessage(
+            msg.chat.id,
+            "AmiroBot" + "\n" + msg.from.first_name + " انتخاب کنیذ:",
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "ارسال پیام", callback_data: "sec_msg" }],
+                  [
+                    {
+                      text: "اطلاعات اکانت شما",
+                      callback_data: "Project/UserInformation",
+                    },
+                  ],
+                ],
+              },
+              reply_to_message_id: msg.message_id,
+            }
+          );
+        }
+      }
+
+      if (action === "sended_msg") {
+        bot.deleteMessage(msg.chat.id, msg.message_id).catch((er) => {
+          return;
+        });
+        if (msg.chat.type === "private") {
+          bot.sendMessage(
+            msg.chat.id,
+            "سلام " + msg.from.first_name + " عزیز به ربات من خوش اومدی",
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: "پروژه ها", callback_data: "projects" },
+                    { text: "ارسال پیام", callback_data: "send_msg" },
+                  ],
+                  [{ text: "من", url: "https://t.me/Amiro_im" }],
+                ],
+              },
+            }
+          );
+        } else {
+          bot.sendMessage(msg.chat.id, "پیام شماارسال شد!", {
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: "ارسال پیام", callback_data: "send_msg" }],
+                [
+                  {
+                    text: "اطلاعات اکانت شما",
+                    callback_data: "Project/UserInformation",
+                  },
+                ],
+              ],
+            },
+          });
+        }
+      }
+
+      if (action === "send_msg") {
+        bot.deleteMessage(msg.chat.id, msg.message_id).catch((er) => {
+          return;
+        });
+
+        bot.sendMessage(
+          msg.chat.id,
+          " پیام خود را ارسال کنید \n" +
+            "( لطفا از ارسال گیف و عکس یا فیلم خودداری کنید! )  ",
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: "🔙برگشت به منوی اصلی",
+                    callback_data: "BackToHome",
+                  },
+                ],
+                [{ text: "ارسال!", callback_data: "sended_msg" }],
+              ],
+            },
+          }
+        );
+      }
+
+      if (action === "projects") {
+        bot.deleteMessage(msg.chat.id, msg.message_id).catch((er) => {
+          return;
+        });
+
+        bot.sendMessage(msg.chat.id, "They are my Projects", {
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "سایت ما", url: "https://Aho-amiro.ir" }],
+              [{ text: "Chat app", callback_data: "Project/ChatAppReact" }],
+              [
+                {
+                  text: "Second Chat app",
+                  callback_data: "Project/ChatAppPhp",
+                },
+              ],
+              [
+                {
+                  text: "اطلاعات اکانت شما",
+                  callback_data: "Project/UserInformation",
+                },
+              ],
+              [{ text: "🔙برگشت به منوی اصلی", callback_data: "BackToHome" }],
+            ],
+          },
+        });
+      }
+
+      if (action === "Project/ChatAppReact") {
+        bot.deleteMessage(msg.chat.id, msg.message_id).catch((er) => {
+          return;
+        });
+
+        bot.sendMessage(
+          msg.chat.id,
+          "در این سایت شما میتوانید با ثبت نام اکانت خود را بسازید و با دوستان یا افرادی که اکانت آنها در لیست وجود دارد حرف بزنید",
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: "رفتن به صفحه➡️",
+                    url: "https://chat.Aho-amiro.ir",
+                  },
+                ],
+                [
+                  {
+                    text: "🔙برگشت به منوی پروژه ها",
+                    callback_data: "projects",
+                  },
+                ],
+                [
+                  {
+                    text: "🔙برگشت به منوی اصلی",
+                    callback_data: "BackToHome",
+                  },
+                ],
+              ],
+            },
+          }
+        );
+      }
+
+      if (action === "Project/ChatAppPhp") {
+        bot.deleteMessage(msg.chat.id, msg.message_id).catch((er) => {
+          return;
+        });
+
+        bot.sendMessage(
+          msg.chat.id,
+          "in this site you can Chat , Make Groups or invite your Friends to chat Here [Comming Soon!]",
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: "Visit➡️", url: "https://chat2.Aho-amiro.ir" }],
+                [
+                  {
+                    text: "🔙برگشت به منوی پروژه ها",
+                    callback_data: "projects",
+                  },
+                ],
+                [
+                  {
+                    text: "🔙برگشت به منوی اصلی",
+                    callback_data: "BackToHome",
+                  },
+                ],
+              ],
+            },
+          }
+        );
+      }
+
+      if (action === "Project/UserInformation") {
+        bot.deleteMessage(msg.chat.id, msg.message_id).catch((er) => {
+          return;
+        });
+
+        if (msg.chat.type === "private") {
+          bot.sendMessage(
+            msg.chat.id,
+            "\n اسم شما: " +
+              msg.from.first_name +
+              "\n یوزرنیم شما: " +
+              "@" +
+              msg.from.username +
+              "\n آیدی عددی شما: " +
+              msg.from.id +
+              "\n",
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: "🔙برگشت به منوی پروژه ها",
+                      callback_data: "projects",
+                    },
+                  ],
+                  [
+                    {
+                      text: "🔙برگشت به منوی اصلی",
+                      callback_data: "BackToHome",
+                    },
+                  ],
+                ],
+              },
+            }
+          );
+        } else {
+          bot.sendMessage(
+            msg.chat.id,
+            "\n اسم گروه: " +
+              msg.chat.title +
+              "\n یوزرنیم گروه: " +
+              "@" +
+              msg.chat.username +
+              "\n نوع گروه: " +
+              msg.chat.type +
+              "\n اسم شما: " +
+              msg.from.first_name +
+              "\n یوزرنیم شما: " +
+              "@" +
+              msg.from.username +
+              "\n آیدی عددی شما: " +
+              msg.from.id +
+              "\n",
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: "🔙برگشت به منوی اصلی",
+                      callback_data: "BackToHome",
+                    },
+                  ],
+                ],
+              },
+            }
+          );
+        }
+      }
+    });
+
+    bot.onText(/clr/, /Clr/, (msg) => {
+      for (let i = 0; i < 99; i++) {
+        bot.deleteMessage(msg.chat.id, msg.message_id - i).catch((er) => {
+          return;
+        });
+        //if there isn't any messages to delete bot simply return
+      }
+    });
+
+    bot.onText(/\/info/, (msg) => {
+      if (msg.chat.type === "private") {
+        bot.sendMessage(
+          msg.chat.id,
+          "\n اسم شما: " +
+            msg.from.first_name +
+            "\n یوزرنیم شما: " +
+            "@" +
+            msg.from.username +
+            "\n آیدی عددی شما: " +
+            msg.from.id +
+            "\n",
+          {
+            reply_to_message_id: msg.message_id,
+          }
+        );
+      } else {
+        bot.sendMessage(
+          msg.chat.id,
+          "\n پیام شماره " +
+            msg.message_id +
+            "\nاسم گروه: " +
+            msg.chat.title +
+            "\n یوزرنیم گروه: " +
+            "@" +
+            msg.chat.username +
+            "\n نوع گروه: " +
+            msg.chat.type +
+            "\n آیدی عددی گروه: " +
+            msg.chat.id +
+            "\n\n " +
+            "~ اطلاعات شما ~" +
+            "\n " +
+            "\n اسم شما: " +
+            msg.from.first_name +
+            "\n یوزرنیم شما: " +
+            "@" +
+            msg.from.username +
+            "\n آیدی عددی شما: " +
+            msg.from.id +
+            "\n",
+          {
+            reply_to_message_id: msg.message_id,
+          }
+        );
+      }
+    });
+  } else {
+    bot.sendMessage(
+      (msg.chat.id = "905259902"),
+      "\n  شخص  \n" +
+        msg.from.first_name +
+        "\n با یوزرنیم : \n" +
+        "  @" +
+        msg.from.username +
+        "\n این پیام را ارسال کرد : \n" +
+        msg.text
+    );
+  }
+});
