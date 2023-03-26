@@ -44,9 +44,10 @@ async function downloadVideo(chatId, url) {
     // Set up an interval to update the message with the download progress every 5 seconds
     let progress = 0;
     const updateInterval = setInterval(() => {
+      const time = new Date(year, month, day, hours, minutes, seconds, milliseconds)
       progress = writeStream.bytesWritten / (1024 * 1024);
       bot.editMessageText(
-        `*Downloading video:* \n ${title} \n (${progress.toFixed(2)} MB) \u{1F4E6}`,
+        ` ${time} \n *Downloading video:* \n ${title} \n (${progress.toFixed(2)} MB) \u{1F4E6}`,
         {
           chat_id: chatId,
           message_id: message.message_id,
