@@ -46,12 +46,6 @@ async function downloadVideo(chatId, url) {
     const updateInterval = setInterval(() => {
       var currentdate = new Date();
       var datetime =
-        currentdate.getFullYear() +
-        "/" +
-        currentdate.getMonth() +
-        "/" +
-        currentdate.getDay() +
-        " \n " +
         currentdate.getHours() +
         ":" +
         currentdate.getMinutes() +
@@ -60,9 +54,9 @@ async function downloadVideo(chatId, url) {
 
       progress = writeStream.bytesWritten / (1024 * 1024);
       bot.editMessageText(
-        ` ${datetime} \n *Downloading video:* \n ${title} \n (${progress.toFixed(
+        ` *Downloading video:* \n ${title} \n (${progress.toFixed(
           2
-        )} MB) \u{1F4E6}`,
+        )} MB) \u{1F4E6} \n ${datetime} \n`,
         {
           chat_id: chatId,
           message_id: message.message_id,
