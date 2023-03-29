@@ -112,3 +112,14 @@ bot.onText(/\/start/, (msg) => {
     /yt - Give any youtube link and TsuyuDL will download it for you.`
   );
 });
+
+
+
+function delayedLoop() {
+  setTimeout(function() {
+    console.log("Bot Is Online");
+    delayedLoop();
+  }, 5000); // delays the loop by 1000 ms (1 second)
+}
+
+delayedLoop(); // starts the
