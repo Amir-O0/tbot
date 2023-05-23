@@ -108,8 +108,8 @@ bot.onText(/\/start/, (msg) => {
   // Send a message with the introduction and instructions
   bot.sendMessage(
     chatId,
-    `Hey, I am AmiroBot made by @Amiro_im . Use the following commands to use me! 
-    /yt - Give any youtube link and TsuyuDL will download it for you.`
+    `Hey, I am YTMiro made by @Amiro_im . Use the following commands to use me! 
+    /yt - Give any youtube link and I will download it for you.`
   );
 });
 
@@ -122,4 +122,5 @@ function delayedLoop() {
   }, 5000); // delays the loop by 1000 ms (1 second)
 }
 
-delayedLoop(); // starts the
+//delayedLoop(); 
+// starts the
