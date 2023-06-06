@@ -1,126 +1,311 @@
-const express = require("express");
-const port = 3948;
-
-const app = express();
-
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+var Telegram = require("node-telegram-bot-api");
+var bot = new Telegram("5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w", {
+  polling: true,
 });
 
-const TelegramBot = require("node-telegram-bot-api");
-const ytdl = require("ytdl-core");
-const fs = require("fs");
+bot.on("message", (msg) => {
+  console.log(msg);
+  console.log(msg.text);
 
-require("dotenv").config();
+  var owner = {
+    id: 905259902,
+    is_bot: false,
+    first_name: "ᴬᵐⁱʳʰᵒˢˢᵉⁱⁿ",
+    username: "Amiro_im",
+  };
 
-// Replace YOUR_BOT_TOKEN with your actual bot token
-const token = "5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w";
+  var admin = {
+    id: 5715913947,
+    first_name: "𝕄𝕠𝕙𝕒𝕞𝕞𝕒𝕕",
+    username: "Mohammad_hosseini_MH",
+  };
 
-// Create a bot instance
-const bot = new TelegramBot(token, { polling: true });
+  var ReplayOBJ = [
+    msg.chat.type === "supergroup" &&
+      msg.from.is_bot === false &&
+      msg.reply_to_message === msg.reply_to_message,
+  ];
 
-// Function to download a YouTube video and send it as a video file
-async function downloadVideo(chatId, url) {
-  try {
-    // Get video information and thumbnail URL
-    const videoInfo = await ytdl.getInfo(url);
-    const title = videoInfo.player_response.videoDetails.title;
-    const thumbnailUrl =
-      videoInfo.videoDetails.thumbnails[
-        videoInfo.videoDetails.thumbnails.length - 1
-      ].url;
-    // Send a message to show the download progress
-    const message = await bot.sendMessage(
-      chatId,
-      `*Downloading video:* \n ${title}`
+  var OnlyOwner = msg.from.id === owner.id;
+
+  //help
+
+  if (
+    msg.text === "/help" ||
+    msg.text === "help" ||
+    msg.text === "Help" ||
+    msg.text === "راهنما"
+  ) {
+    bot.sendMessage(
+      msg.chat.id,
+      `
+ لیست دستورات :
+
+
+ 💠💠💠
+/ping
+bot
+Bot
+پینگ
+ربات
+💠💠💠
+
+💠💠💠
+/report
+report
+Report
+ریپورت
+گزارش
+💠💠💠
+
+💠💠💠
+/pin
+pin
+Pin
+پین
+سنجاق
+💠💠💠
+
+💠💠💠
+/mute
+mute
+Mute
+میوت
+سکوت
+💠💠💠
+
+💠💠💠
+/unmute
+unmute
+Unmute
+UnMute
+آن میوت
+ان میوت
+حذف میوت
+لغو میوت
+لغو سکوت
+حذف سکوت
+💠💠💠
+
+💠💠💠
+/ban
+ban
+Ban
+بن
+اخراج
+💠💠💠
+
+💠💠💠
+/unban
+unban
+Unban
+UnBan
+آن بن
+ان بن
+حذف اخراج
+لغو اخراج
+حذف بن
+لغو بن
+💠💠💠
+`
     );
+  }
 
-    // Create a writable stream to store the video file
-    const writeStream = fs.createWriteStream(`${title}-${chatId}.mp4`);
+  // ping
 
-    // Start the download and pipe the video data to the writable stream
-    ytdl(url, { filter: "audioandvideo" }).pipe(writeStream);
+  if (
+    (ReplayOBJ && msg.text === "/ping") ||
+    msg.text === "bot" ||
+    msg.text === "Bot" ||
+    msg.text === "پینگ" ||
+    msg.text === "ربات"
+  ) {
+    bot.sendMessage(msg.chat.id, `Bot is online`, {
+      reply_to_message_id: msg.message_id,
+    });
+  }
 
-    // Set up an interval to update the message with the download progress every 5 seconds
-    let progress = 0;
-    const updateInterval = setInterval(() => {
-      var currentdate = new Date();
-      var datetime =
-        currentdate.getHours() +
-        ":" +
-        currentdate.getMinutes() +
-        ":" +
-        currentdate.getSeconds();
+  //  new member joined
 
-      progress = writeStream.bytesWritten / (1024 * 1024);
-      bot.editMessageText(
-        ` *Downloading video:* \n ${title} \n (${progress.toFixed(
-          2
-        )} MB) \u{1F4E6} \n ${datetime} \n`,
+  if (
+    msg.text === undefined &&
+    msg.new_chat_member === msg.new_chat_member &&
+    msg.chat.type === "supergroup"
+  ) {
+    bot.sendMessage(
+      msg.chat.id,
+      `💠Hello ${msg.new_chat_member.first_name}💠\n` +
+        `Welcome To ${msg.chat.title} Group\n` +
+        `Have fun time😎`,
+      {
+        reply_to_message_id: msg.message_id,
+      }
+    );
+  } else if (
+    msg.text === undefined &&
+    msg.left_chat_member.id === msg.left_chat_member.id &&
+    msg.chat.type === "supergroup"
+  ) {
+    return 0;
+  }
+
+  //  report to owner
+
+  if (
+    (ReplayOBJ && msg.text === "/report") ||
+    msg.text === "report" ||
+    msg.text === "Report" ||
+    msg.text === "ریپورت" ||
+    msg.text === "گزارش"
+  ) {
+    bot.sendMessage(
+      msg.chat.id,
+      `👤${msg.from.first_name} Your Report Send To Admin's✅`,
+      {
+        reply_to_message_id: msg.message_id,
+      }
+    ),
+      bot.sendMessage(
+        (msg.chat.id = owner.id),
+        `🔰Report🔰\n` +
+          `👤User : ${msg.from.first_name} | @${msg.from.username}\n` +
+          `👤To User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username}\n` +
+          `👥Group info : ${msg.chat.title} | ${msg.chat.type}\n` +
+          `✉️Message :\n ${msg.reply_to_message.text} \n\n` +
+          `🔰End Report🔰`
+      ),
+      bot.sendMessage(
+        (msg.chat.id = admin.id),
+        `🔰Report🔰\n` +
+          `👤User : ${msg.from.first_name} | @${msg.from.username}\n` +
+          `👤To User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username}\n` +
+          `👥Group info : ${msg.chat.title} | ${msg.chat.type}\n` +
+          `✉️Message :\n ${msg.reply_to_message.text} \n\n` +
+          `🔰End Report🔰`
+      );
+  }
+
+  // pin message
+
+  if (
+    (ReplayOBJ && OnlyOwner && msg.text === "/pin") ||
+    msg.text === "pin" ||
+    msg.text === "Pin" ||
+    msg.text === "پین" ||
+    msg.text === "سنجاق"
+  ) {
+    bot.pinChatMessage(
+      msg.chat.id,
+      (message_id = msg.reply_to_message.message_id)
+    ),
+      bot.sendMessage(msg.chat.id, `📌Message pined`, {
+        reply_to_message_id: msg.message_id,
+      });
+  }
+
+  //  mute user
+
+  if (
+    (ReplayOBJ && OnlyOwner && msg.text === "/mute") ||
+    msg.text === "mute" ||
+    msg.text === "Mute" ||
+    msg.text === "میوت" ||
+    msg.text === "سکوت"
+  ) {
+    const chat_id = msg.chat.id;
+    const user_id = msg.reply_to_message.from.id;
+
+    bot.restrictChatMember(chat_id, user_id, {
+      can_send_messages: false,
+      can_send_media_messages: false,
+      can_send_polls: false,
+      can_send_other_messages: false,
+      can_add_web_page_previews: false,
+      can_change_info: false,
+      can_pin_messages: false,
+      can_invite_users: false,
+    });
+    bot.sendMessage(
+      msg.chat.id,
+      `👤User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username} \n` +
+        `⛔️Mute By ${msg.from.first_name}`,
+      {
+        reply_to_message_id: msg.message_id,
+      }
+    );
+  } else if (
+    (ReplayOBJ && OnlyOwner && msg.text === "/unmute") ||
+    msg.text === "unmute" ||
+    msg.text === "Unmute" ||
+    msg.text === "UnMute" ||
+    msg.text === "آن میوت" ||
+    msg.text === "ان میوت" ||
+    msg.text === "حذف میوت" ||
+    msg.text === "لغو میوت" ||
+    msg.text === "لغو سکوت" ||
+    msg.text === "حذف سکوت"
+  ) {
+    const chat_id = msg.chat.id;
+    const user_id = msg.reply_to_message.from.id;
+
+    bot.restrictChatMember(chat_id, user_id, {
+      can_send_messages: true,
+      can_send_media_messages: true,
+      can_send_polls: true,
+      can_send_other_messages: true,
+      can_add_web_page_previews: true,
+      can_change_info: true,
+      can_pin_messages: true,
+      can_invite_users: true,
+    });
+    bot.sendMessage(
+      msg.chat.id,
+      `👤User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username} \n` +
+        `✅UnMute By ${msg.from.first_name}`,
+      {
+        reply_to_message_id: msg.message_id,
+      }
+    );
+  }
+
+  // ban and unban
+
+  if (
+    (ReplayOBJ && OnlyOwner && msg.text === "/ban") ||
+    msg.text === "ban" ||
+    msg.text === "Ban" ||
+    msg.text === "بن" ||
+    msg.text === "اخراج"
+  ) {
+    bot.banChatMember(msg.chat.id, (user_id = msg.reply_to_message.from.id)),
+      bot.sendMessage(
+        msg.chat.id,
+        `👤User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username} \n` +
+          `⛔️Ban By ${msg.from.first_name}`,
         {
-          chat_id: chatId,
-          message_id: message.message_id,
-          parse_mode: "Markdown", // use Markdown formatting
+          reply_to_message_id: msg.message_id,
         }
       );
-    }, 500);
-
-    // When the download is complete, send the video and delete the file
-    writeStream.on("finish", () => {
-      clearInterval(updateInterval); // stop updating the message
-      bot
-        .sendVideo(chatId, `${title}-${chatId}.mp4`, {
-          caption: `*Video downloaded:* \n ${title}`,
-          thumb: thumbnailUrl,
-          duration: videoInfo.videoDetails.lengthSeconds,
-          parse_mode: "Markdown",
-        })
-
-        .then(() => {
-          fs.unlinkSync(`${title}-${chatId}.mp4`); // delete the file
-        })
-        .catch((error) => {
-          bot.sendMessage(chatId, "Error sending video.");
-          console.error(error);
-        });
-    });
-  } catch (error) {
-    bot.sendMessage(chatId, "Error downloading video.");
-    console.error(error);
-  }
-}
-
-// Listen for the /yt command
-bot.onText(/\/yt/, (msg) => {
-  const chatId = msg.chat.id;
-  const url = msg.text.split(" ")[1];
-
-  if (ytdl.validateURL(url)) {
-    downloadVideo(chatId, url);
-  } else {
-    bot.sendMessage(chatId, "Invalid YouTube URL.");
+  } else if (
+    (ReplayOBJ && OnlyOwner && msg.text === "/unban") ||
+    msg.text === "unban" ||
+    msg.text === "Unban" ||
+    msg.text === "UnBan" ||
+    msg.text === "آن بن" ||
+    msg.text === "ان بن" ||
+    msg.text === "حذف اخراج" ||
+    msg.text === "لغو اخراج" ||
+    msg.text === "حذف بن" ||
+    msg.text === "لغو بن"
+  ) {
+    bot.unbanChatMember(msg.chat.id, (user_id = msg.reply_to_message.from.id)),
+      bot.sendMessage(
+        msg.chat.id,
+        `👤User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username} \n` +
+          `✅UnBan By ${msg.from.first_name}`,
+        {
+          reply_to_message_id: msg.message_id,
+        }
+      );
   }
 });
-
-bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-
-  // Send a message with the introduction and instructions
-  bot.sendMessage(
-    chatId,
-    `Hey, I am YTMiro made by @Amiro_im . Use the following commands to use me! 
-    /yt - Give any youtube link and I will download it for you.`
-  );
-});
-
-
-
-function delayedLoop() {
-  setTimeout(function() {
-    console.log("Bot Is Online");
-    delayedLoop();
-  }, 5000); // delays the loop by 1000 ms (1 second)
-}
-
-//delayedLoop(); 
-// starts the
