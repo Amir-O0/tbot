@@ -1,191 +1,61 @@
-var Telegram = require("node-telegram-bot-api");
-var bot = new Telegram("5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w", {
+const Telegram = require(`node-telegram-bot-api`);
+
+const bot = new Telegram(`5696293826:AAGNv2K-XTrFxNkmjbB9EnMr46g27dxbU3w`, {
   polling: true,
 });
 
-bot.on("message", (msg) => {
-  console.log(msg);
-  console.log(msg.text);
-
-  var owner = {
-    id: 905259902,
-    is_bot: false,
-    first_name: "ᴬᵐⁱʳʰᵒˢˢᵉⁱⁿ",
-    username: "Amiro_im",
-  };
-
-  var admin = {
-    id: 5715913947,
-    first_name: "𝕄𝕠𝕙𝕒𝕞𝕞𝕒𝕕",
-    username: "Mohammad_hosseini_MH",
-  };
-
-  var ReplayOBJ = [
-    msg.chat.type === "supergroup" &&
-      msg.from.is_bot === false &&
-      msg.reply_to_message === msg.reply_to_message,
-  ];
-
-  var OnlyOwner = msg.from.id === owner.id;
-
-  //help
-
-  if (
-    msg.text === "/help" ||
-    msg.text === "help" ||
-    msg.text === "Help" ||
-    msg.text === "پنل" ||
-    msg.text === "راهنما"
-  ) {
-    bot.sendMessage(
-      msg.chat.id,
-      `
- لیست دستورات :
-
-💠💠💠
-/ping
-ربات
-💠💠💠
-
-💠💠💠
-/report
-گزارش
-💠💠💠
-
-💠💠💠
-/pin
-سنجاق
-💠💠💠
-
-💠💠💠
-/mute
-سکوت
-
-/unmute
-حذف سکوت
-💠💠💠
-
-💠💠💠
-/ban
-اخراج
-
-/unban
-حذف اخراج
-💠💠💠
-
-تمامی دستور ها با فینگلیش هم کار میکنند
-ادمین : @Amiro_im
-`
-    );
-  }
-
-  // ping
-
-  if (
-    (ReplayOBJ && msg.text === "/ping") ||
-    msg.text === "ping"||
-    msg.text === "Ping"||
-    msg.text === "bot" ||
-    msg.text === "Bot" ||
-    msg.text === "پینگ" ||
-    msg.text === "ربات"
-  ) {
-    bot.sendMessage(msg.chat.id, `Bot is online`, {
+// member join message
+bot.on(`new_chat_members`, (msg) => {
+  bot.sendMessage(
+    msg.chat.id,
+    `💠Hello <a href='tg://user?id=${msg.new_chat_member.id}'>${msg.new_chat_member.first_name}</a>💠\n` +
+      `🫡Welcome To ${msg.chat.title} Group\n` +
+      `Have fun time😎`,
+    {
+      parse_mode: `HTML`,
       reply_to_message_id: msg.message_id,
-    });
+    }
+  );
+});
+
+// member left message
+bot.on(`left_chat_member`, (msg) => {
+  bot.sendMessage(
+    msg.chat.id,
+    `💠Bye <a href='tg://user?id=${msg.left_chat_member.id}'>${msg.left_chat_member.first_name}</a>💠\n` +
+      `🫡<a href='tg://user?id=${msg.left_chat_member.id}'>${msg.left_chat_member.first_name}</a> left from ${msg.chat.title}\n`,
+    {
+      parse_mode: `HTML`,
+      reply_to_message_id: msg.message_id,
+    }
+  );
+});
+
+// delete chat title cheng message
+bot.on(`new_chat_title`, (msg) => {
+  bot.deleteMessage(msg.chat.id, msg.message_id).catch((er) => {
+    return;
+  });
+});
+
+// set title
+bot.onText(/\/settitle/, (msg) => {
+  titleName = msg.text.split(" ")[1];
+  bot.setChatTitle(msg.chat.id, titleName);
+});
+
+// mute
+// mute or unmute
+bot.onText(/\/idmute/, (msg) => {
+  const uid = msg.text.split(" ")[1];
+  if (msg.text.split(" ")[2] === "") {
+    resion = "";
+  } else {
+    resion = `Resion : ${msg.text.split(" ")[2]}`;
   }
 
-  //  new member joined
-
-  if (
-    msg.text === undefined &&
-    msg.new_chat_member === msg.new_chat_member &&
-    msg.chat.type === "supergroup"
-  ) {
-    bot.sendMessage(
-      msg.chat.id,
-      `💠Hello ${msg.new_chat_member.first_name}💠\n` +
-        `Welcome To ${msg.chat.title} Group\n` +
-        `Have fun time😎`,
-      {
-        reply_to_message_id: msg.message_id,
-      }
-    );
-  } else if (
-    msg.text === undefined &&
-    msg.left_chat_member.id === msg.left_chat_member.id &&
-    msg.chat.type === "supergroup"
-  ) {
-    return 0;
-  }
-
-  //  report to owner
-
-  if (
-    (ReplayOBJ && msg.text === "/report") ||
-    msg.text === "report" ||
-    msg.text === "Report" ||
-    msg.text === "ریپورت" ||
-    msg.text === "گزارش"
-  ) {
-    bot.sendMessage(
-      msg.chat.id,
-      `👤${msg.from.first_name} Your Report Send To Admin's✅`,
-      {
-        reply_to_message_id: msg.message_id,
-      }
-    ),
-      bot.sendMessage(
-        (msg.chat.id = owner.id),
-        `🔰Report🔰\n` +
-          `👤User : ${msg.from.first_name} | @${msg.from.username}\n` +
-          `👤To User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username}\n` +
-          `👥Group info : ${msg.chat.title} | ${msg.chat.type}\n` +
-          `✉️Message :\n ${msg.reply_to_message.text} \n\n` +
-          `🔰End Report🔰`
-      ),
-      bot.sendMessage(
-        (msg.chat.id = admin.id),
-        `🔰Report🔰\n` +
-          `👤User : ${msg.from.first_name} | @${msg.from.username}\n` +
-          `👤To User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username}\n` +
-          `👥Group info : ${msg.chat.title} | ${msg.chat.type}\n` +
-          `✉️Message :\n ${msg.reply_to_message.text} \n\n` +
-          `🔰End Report🔰`
-      );
-  }
-
-  // pin message
-
-  if (
-    (ReplayOBJ && OnlyOwner && msg.text === "/pin") ||
-    msg.text === "pin" ||
-    msg.text === "Pin" ||
-    msg.text === "پین" ||
-    msg.text === "سنجاق"
-  ) {
-    bot.pinChatMessage(
-      msg.chat.id,
-      (message_id = msg.reply_to_message.message_id)
-    ),
-      bot.sendMessage(msg.chat.id, `📌Message pined`, {
-        reply_to_message_id: msg.message_id,
-      });
-  }
-
-  //  mute user
-
-  if (
-    (ReplayOBJ && OnlyOwner && msg.text === "/mute") ||
-    msg.text === "mute" ||
-    msg.text === "Mute" ||
-    msg.text === "میوت" ||
-    msg.text === "سکوت"
-  ) {
-    const chat_id = msg.chat.id;
-    const user_id = msg.reply_to_message.from.id;
-
-    bot.restrictChatMember(chat_id, user_id, {
+  bot.getChat((msg.from.id = uid)).then((fullInformation) => {
+    bot.restrictChatMember(msg.chat.id, uid, {
       can_send_messages: false,
       can_send_media_messages: false,
       can_send_polls: false,
@@ -194,31 +64,56 @@ bot.on("message", (msg) => {
       can_change_info: false,
       can_pin_messages: false,
       can_invite_users: false,
-    });
+    }),
+      bot.sendMessage(
+        msg.chat.id,
+        `👤User :  <a href='tg://user?id=${fullInformation.id}'> ${fullInformation.first_name}\n</a>` +
+          `⛔️Mute By <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>` +
+          `\n ${resion}`,
+        {
+          parse_mode: `HTML`,
+          reply_to_message_id: msg.message_id,
+        }
+      );
+  });
+});
+
+// mute or unmute
+bot.onText(/\/mute/, (msg) => {
+  uId = msg.reply_to_message.from.id;
+  if (msg.text.split(" ")[1] === "") {
+    resion = "";
+  } else {
+    resion = `Resion : ${msg.text.split(" ")[1]}`;
+  }
+  bot.restrictChatMember(msg.chat.id, uId, {
+    can_send_messages: false,
+    can_send_media_messages: false,
+    can_send_polls: false,
+    can_send_other_messages: false,
+    can_add_web_page_previews: false,
+    can_change_info: false,
+    can_pin_messages: false,
+    can_invite_users: false,
+  }),
     bot.sendMessage(
       msg.chat.id,
-      `👤User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username} \n` +
-        `⛔️Mute By ${msg.from.first_name}`,
+      `👤User : <a href='tg://user?id=${msg.reply_to_message.from.id}'>${msg.reply_to_message.from.first_name}</a>\n` +
+        `⛔️Mute By <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>` +
+        `\n ${resion}`,
       {
+        parse_mode: `HTML`,
         reply_to_message_id: msg.message_id,
       }
     );
-  } else if (
-    (ReplayOBJ && OnlyOwner && msg.text === "/unmute") ||
-    msg.text === "unmute" ||
-    msg.text === "Unmute" ||
-    msg.text === "UnMute" ||
-    msg.text === "آن میوت" ||
-    msg.text === "ان میوت" ||
-    msg.text === "حذف میوت" ||
-    msg.text === "لغو میوت" ||
-    msg.text === "لغو سکوت" ||
-    msg.text === "حذف سکوت"
-  ) {
-    const chat_id = msg.chat.id;
-    const user_id = msg.reply_to_message.from.id;
+});
 
-    bot.restrictChatMember(chat_id, user_id, {
+// mute or unmute
+bot.onText(/\/idunmute/, (msg) => {
+  const uid = msg.text.split(" ")[1];
+
+  bot.getChat((msg.from.id = uid)).then((fullInformation) => {
+    bot.restrictChatMember(msg.chat.id, uid, {
       can_send_messages: true,
       can_send_media_messages: true,
       can_send_polls: true,
@@ -227,55 +122,348 @@ bot.on("message", (msg) => {
       can_change_info: true,
       can_pin_messages: true,
       can_invite_users: true,
-    });
+    }),
+      bot.sendMessage(
+        msg.chat.id,
+        `👤User :  <a href='tg://user?id=${fullInformation.id}'> ${fullInformation.first_name}</a>\n` +
+          `✅UnMute By <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>`,
+        {
+          parse_mode: `HTML`,
+          reply_to_message_id: msg.message_id,
+        }
+      );
+  });
+});
+
+// mute or unmute
+bot.onText(/\/unmute/, (msg) => {
+  uId = msg.reply_to_message.from.id;
+  bot.restrictChatMember(msg.chat.id, uId, {
+    can_send_messages: true,
+    can_send_media_messages: true,
+    can_send_polls: true,
+    can_send_other_messages: true,
+    can_add_web_page_previews: true,
+    can_change_info: true,
+    can_pin_messages: true,
+    can_invite_users: true,
+  }),
     bot.sendMessage(
       msg.chat.id,
-      `👤User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username} \n` +
-        `✅UnMute By ${msg.from.first_name}`,
+      `👤User : <a href='tg://user?id=${msg.reply_to_message.from.id}'> ${msg.reply_to_message.from.first_name}</a>\n` +
+        `✅UnMute By <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>`,
       {
+        parse_mode: `HTML`,
         reply_to_message_id: msg.message_id,
       }
     );
-  }
+});
 
-  // ban and unban
+// ban
+// ban and unban
+bot.onText(/\/idban/, (msg) => {
+  const uid = msg.text.split(" ")[1];
 
-  if (
-    (ReplayOBJ && OnlyOwner && msg.text === "/ban") ||
-    msg.text === "ban" ||
-    msg.text === "Ban" ||
-    msg.text === "بن" ||
-    msg.text === "اخراج"
-  ) {
-    bot.banChatMember(msg.chat.id, (user_id = msg.reply_to_message.from.id)),
+  bot.getChat((msg.from.id = uid)).then((fullInformation) => {
+    bot.banChatMember(msg.chat.id, uid),
       bot.sendMessage(
         msg.chat.id,
-        `👤User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username} \n` +
-          `⛔️Ban By ${msg.from.first_name}`,
+        `👤User :  <a href='tg://user?id=${fullInformation.id}'> ${fullInformation.first_name}\n</a>` +
+          `⛔️Ban By <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>` +
+          `\n Resion : ${msg.text.split(" ")[2]}`,
         {
+          parse_mode: `HTML`,
           reply_to_message_id: msg.message_id,
         }
       );
-  } else if (
-    (ReplayOBJ && OnlyOwner && msg.text === "/unban") ||
-    msg.text === "unban" ||
-    msg.text === "Unban" ||
-    msg.text === "UnBan" ||
-    msg.text === "آن بن" ||
-    msg.text === "ان بن" ||
-    msg.text === "حذف اخراج" ||
-    msg.text === "لغو اخراج" ||
-    msg.text === "حذف بن" ||
-    msg.text === "لغو بن"
-  ) {
-    bot.unbanChatMember(msg.chat.id, (user_id = msg.reply_to_message.from.id)),
+  });
+});
+
+// ban and unban
+bot.onText(/\/ban/, (msg) => {
+  if (msg.text.split(" ")[1] === "") {
+    resion = "";
+  } else {
+    resion = `Resion : ${msg.text.split(" ")[1]}`;
+  }
+  bot.banChatMember(msg.chat.id, msg.reply_to_message.from.id),
+    bot.sendMessage(
+      msg.chat.id,
+      `👤User : <a href='tg://user?id=${msg.reply_to_message.from.id}'>${msg.reply_to_message.from.first_name}</a> \n` +
+        `⛔️Ban By <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>` +
+        `\n ${resion}`,
+      {
+        parse_mode: `HTML`,
+        reply_to_message_id: msg.message_id,
+      }
+    );
+});
+
+// ban and unban
+bot.onText(/\/idunban/, (msg) => {
+  const uid = msg.text.split(" ")[1];
+
+  bot.getChat((msg.from.id = uid)).then((fullInformation) => {
+    bot.unbanChatMember(msg.chat.id, uid),
       bot.sendMessage(
         msg.chat.id,
-        `👤User : ${msg.reply_to_message.from.first_name} | @${msg.reply_to_message.from.username} \n` +
-          `✅UnBan By ${msg.from.first_name}`,
+        `👤User :  <a href='tg://user?id=${fullInformation.id}'> ${fullInformation.first_name}</a>\n` +
+          `✅UnBan By <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>`,
         {
+          parse_mode: `HTML`,
           reply_to_message_id: msg.message_id,
         }
       );
+  });
+});
+
+// ban and unban
+bot.onText(/\/unban/, (msg) => {
+  bot.unbanChatMember(msg.chat.id, msg.reply_to_message.from.id),
+    bot.sendMessage(
+      msg.chat.id,
+      `👤User : <a href='tg://user?id=${msg.reply_to_message.from.id}'> ${msg.reply_to_message.from.first_name}</a>\n` +
+        `✅UnBan By <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>`,
+      {
+        parse_mode: `HTML`,
+        reply_to_message_id: msg.message_id,
+      }
+    );
+});
+
+// report
+bot.onText(/\/report/, (msg) => {
+  bot.sendMessage(
+    msg.chat.id,
+    `👤<a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a> Your Report Send To Admin's✅`,
+    {
+      parse_mode: `HTML`,
+      reply_to_message_id: msg.message_id,
+    }
+  ),
+    bot.getChat(msg.chat.id).then((ChatLink) => {
+      console.log(ChatLink);
+      InviteChatLink = ChatLink.invite_link;
+      bot.sendMessage(
+        (msg.chat.id = `905259902`),
+        `🔰Report🔰\n` +
+          `👤User : <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a> \n` +
+          `👤To User : <a href='tg://user?id=${msg.reply_to_message.from.id}'>${msg.reply_to_message.from.first_name}</a>\n` +
+          `👥Group info :<a href='${InviteChatLink}'>${msg.reply_to_message.chat.title}</a> | ${msg.chat.type}\n` +
+          `✉️Message :\n ${msg.reply_to_message.text} \n\n` +
+          `🔰End Report🔰`,
+        { parse_mode: `HTML` }
+      );
+    });
+});
+
+// user info's
+bot.onText(/\/idinfo/, (msg) => {
+  uid = msg.text.split(" ")[1];
+
+  bot.getChat((msg.from.id = uid)).then((fullInformation) => {
+    bot.getUserProfilePhotos((msg.from.id = uid)).then((data) => {
+      if ((data.total_count = data.total_count)) {
+        newProfilePicture = data.photos[data.total_count - data.total_count][0];
+        bot.sendPhoto(msg.chat.id, (media = newProfilePicture.file_id), {
+          reply_to_message_id: msg.message_id,
+          parse_mode: `HTML`,
+          caption:
+            `\n Message Number: ${msg.message_id}` +
+            `\n👥Group Name: <code>${msg.chat.title}</code>` +
+            `\n🆔Group ID: <code>${msg.chat.id}</code>` +
+            `\n\n ` +
+            `~♾️ User Information ♾️~` +
+            `\n` +
+            `\n🆔User Name: <a href='tg://user?id=${(msg.from.id = uid)}'>${
+              fullInformation.first_name
+            }</a>` +
+            `\n🆔User ID: <code>${(msg.from.id = uid)}</code>` +
+            `\n🆔User Username: <code>@${fullInformation.username}</code>` +
+            `\n🆔User Bio: <code>${fullInformation.bio}</code>` +
+            `\n`,
+        });
+      } else {
+        bot.sendMessage(
+          msg.chat.id,
+          `\n Message Number: ${msg.message_id}` +
+            `\n👥Group Name: <code>${msg.chat.title}</code>` +
+            `\n🆔Group ID: <code>${msg.chat.id}</code>` +
+            `\n\n ` +
+            `~♾️ User Information ♾️~` +
+            `\n` +
+            `\n🆔User Name: <a href='tg://user?id=${(msg.from.id = uid)}'>${
+              fullInformation.first_name
+            }</a>` +
+            `\n🆔User ID: <code>${(msg.from.id = uid)}</code>` +
+            `\n🆔User Username: <code>@${fullInformation.username}</code>` +
+            `\n🆔User Bio: <code>${fullInformation.bio}</code>` +
+            `\n`,
+          {
+            parse_mode: `HTML`,
+            reply_to_message_id: msg.message_id,
+          }
+        );
+      }
+    });
+  });
+});
+
+// user info's
+
+bot.onText(/\/uinfo/, (msg) => {
+  bot.getChat(msg.reply_to_message.from.id).then((fullInformation) => {
+    bot.getUserProfilePhotos(msg.reply_to_message.from.id).then((data) => {
+      if ((data.total_count = data.total_count)) {
+        newProfilePicture = data.photos[data.total_count - data.total_count][0];
+        bot.sendPhoto(msg.chat.id, (media = newProfilePicture.file_id), {
+          reply_to_message_id: msg.message_id,
+          parse_mode: `HTML`,
+          caption:
+            `\n Message Number: ${msg.message_id}` +
+            `\n👥Group Name: <code>${msg.chat.title}</code>` +
+            `\n🆔Group ID: <code>${msg.chat.id}</code>` +
+            `\n\n ` +
+            `~♾️ User Information ♾️~` +
+            `\n` +
+            `\n🆔User Name: <a href='tg://user?id=${msg.reply_to_message.from.id}'>${msg.reply_to_message.from.first_name}</a>` +
+            `\n🆔User ID: <code>${msg.reply_to_message.from.id}</code>` +
+            `\n🆔User Username: <code>@${msg.reply_to_message.from.username}</code>` +
+            `\n🆔User Bio: <code>${fullInformation.bio}</code>` +
+            `\n`,
+        });
+      } else {
+        bot.sendMessage(
+          msg.chat.id,
+          `\n Message Number: ${msg.message_id}` +
+            `\n👥Group Name: <code>${msg.chat.title}</code>` +
+            `\n🆔Group ID: <code>${msg.chat.id}</code>` +
+            `\n\n ` +
+            `~♾️ User Information ♾️~` +
+            `\n` +
+            `\n🆔User Name: <a href='tg://user?id=${msg.reply_to_message.from.id}'>${msg.reply_to_message.from.first_name}</a>` +
+            `\n🆔User ID: <code>${msg.reply_to_message.from.id}</code>` +
+            `\n🆔User Username: <code>@${msg.reply_to_message.from.username}</code>` +
+            `\n🆔User Bio: <code>${fullInformation.bio}</code>` +
+            `\n`,
+          {
+            parse_mode: `HTML`,
+            reply_to_message_id: msg.message_id,
+          }
+        );
+      }
+    });
+  });
+});
+
+// user info's
+
+bot.onText(/\/info/, (msg) => {
+  bot.getChat(msg.from.id).then((fullInformation) => {
+    bot.getUserProfilePhotos(msg.from.id).then((data) => {
+      if ((data.total_count = data.total_count)) {
+        newProfilePicture = data.photos[data.total_count - data.total_count][0];
+        bot.sendPhoto(msg.chat.id, (media = newProfilePicture.file_id), {
+          reply_to_message_id: msg.message_id,
+          parse_mode: `HTML`,
+          caption:
+            `\n Message Number: ${msg.message_id}` +
+            `\n👥Group Name: <code>${msg.chat.title}</code>` +
+            `\n🆔Group ID: <code>${msg.chat.id}</code>` +
+            `\n\n ` +
+            `~♾️ User Information ♾️~` +
+            `\n` +
+            `\n🆔Your Name: <a href='tg://user?id=${msg.from.id}'>${msg.from.first_name}</a>` +
+            `\n🆔Your ID: <code>${msg.from.id}</code>` +
+            `\n🆔Your Username: <code>@${msg.from.username}</code>` +
+            `\n🆔Your Bio: <code>${fullInformation.bio}</code>` +
+            `\n`,
+        });
+      } else {
+        bot.sendMessage(
+          msg.chat.id,
+          `\n Message Number: ${msg.message_id}` +
+            `\n👥Group Name: <code>${msg.chat.title}</code>` +
+            `\n🆔Group ID: <code>${msg.chat.id}</code>` +
+            `\n\n ` +
+            `~♾️ User Information ♾️~` +
+            `\n` +
+            `\n🆔Your Name: <a href='tg://user?id=${msg.from.id}'>${msg.reply_to_message.from.first_name}</a>` +
+            `\n🆔Your ID: <code>${msg.from.id}</code>` +
+            `\n🆔Your Username: <code>@${msg.from.username}</code>` +
+            `\n🆔Your Bio: <code>${fullInformation.bio}</code>` +
+            `\n`,
+          {
+            parse_mode: `HTML`,
+            reply_to_message_id: msg.message_id,
+          }
+        );
+      }
+    });
+  });
+});
+
+// photo's of profile
+bot.onText(/\/firstphoto/, (msg) => {
+  bot.getUserProfilePhotos(msg.reply_to_message.from.id).then((data) => {
+    if (data.total_count === 0) {
+      bot.sendMessage(msg.chat.id, `user dont have profile picture❌`, {
+        reply_to_message_id: msg.message_id,
+      });
+    } else {
+      newProfilePicture = data.photos[data.total_count - data.total_count][0];
+      bot.sendPhoto(msg.chat.id, (media = newProfilePicture.file_id), {
+        reply_to_message_id: msg.message_id,
+      });
+    }
+  });
+});
+
+// photo's of profile
+
+bot.onText(/\/allprofiles/, (msg) => {
+  bot.getUserProfilePhotos(msg.reply_to_message.from.id).then((data) => {
+    if (data.total_count === 0) {
+      bot.sendMessage(msg.chat.id, `user dont have profile picture❌`, {
+        reply_to_message_id: msg.message_id,
+      });
+    } else {
+      for (let i = 0; i < data.total_count; i++) {
+        allProfilePicture = data.photos[i][0];
+        bot.sendPhoto(msg.chat.id, (media = allProfilePicture.file_id), {
+          reply_to_message_id: msg.message_id,
+        });
+      }
+    }
+  });
+});
+
+// bot.getChatMember(msg.chat.id, msg.from.id).then(function (data) {
+//   if (data.status == "creator" || data.status == "administrator") {
+//   } else if (data.status == "creator") {
+//   } else if (data.status == "administrator") {
+//   }
+//   // console.log(userStatus);
+// });
+
+bot.onText(/\/titletime/, (msg) => {
+  var GetDate = Date(msg.date * 1000);
+  GetTime = GetDate.split(" ")[4];
+  var ChatTitle = msg.chat.title;
+  bot.setChatTitle(msg.chat.id, `${GetTime} | ${ChatTitle}`);
+
+  function time() {
+    var GetDateTIME = Date(msg.date * 1000);
+    GetTimeTIME = GetDateTIME.split(" ")[4];
+
+    bot.setChatTitle(msg.chat.id, `${GetTimeTIME} | ${ChatTitle}`);
   }
+
+  setInterval(time, 5000);
+});
+
+bot.onText(/\/orginalname/, (msg) => {
+  setTimeout(time(), 500);
+  var ChatTitle = msg.chat.title.split(" | ")[1];
+  bot.setChatTitle(msg.chat.id, ChatTitle);
 });
